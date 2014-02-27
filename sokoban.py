@@ -232,7 +232,7 @@ class Application(tk.Frame):
             return
 
         row, column = self.player_position
-        if self.level[prev_row][prev_column] is Level.hole:
+        if self.level[prev_row][prev_column] is Level.hole and not blocked:
             hole = tk.PhotoImage(file=Image.hole)
             w = tk.Label(self.frame, image=hole)
             w.hole = hole
@@ -283,6 +283,19 @@ class Application(tk.Frame):
             self.level[row][column] = Level.hole
             self.level[next_row][next_column] = Level.crate
             self.holes[(row, column)] = Hole.empty
+
+        elif self.level[row][column] is Level.crate_in_hole and self.level[next_row][next_column] is Level.hole:
+            self.crates[(row, column)].grid_forget()
+            crate_in_hole = tk.PhotoImage(file=Image.crate_in_hole)
+            w = tk.Label(self.frame, image=crate_in_hole)
+            w.crate_in_hole = crate_in_hole
+            w.grid(row=next_row, column=next_column)
+
+            self.crates[(next_row, next_column)] = w
+            self.level[row][column] = Level.hole
+            self.level[next_row][next_column] = Level.crate_in_hole
+            self.holes[(row, column)] = Hole.empty
+            self.holes[(next_row, next_column)] = Hole.filled
 
         if self.is_blocked(location, next_location):
             return True
