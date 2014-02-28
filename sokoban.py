@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import tkinter as tk
-from tkinter.filedialog import askopenfilenames
+import Tkinter as tk
+from tkFileDialog import askopenfilenames
 import pydoc
 
 __version__ = "PySokoban 1.0"
