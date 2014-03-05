@@ -1,26 +1,41 @@
-#!/usr/bin/python
-import Tkinter as tk
-from tkFileDialog import askopenfilenames
+#!/usr/bin/env python
+
+try:
+    import Tkinter as tk
+    from tkFileDialog import askopenfilenames
+except ImportError:
+    import tkinter as tk
+    from tkinter.filedialog import askopenfilenames
 import pydoc
+import os
 
-__version__ = "PySokoban 1.0"
+
 __author__ = "Risto Stevcev"
+__version__ = "1.0"
+if not __package__:
+    __package__ = "pysokoban"
 
-class Menu(object):
-    @staticmethod
-    def OpenFile():
-        app.grid_forget()
-        level_files = app.tk.splitlist(askopenfilenames())
-        app.level_files = list(level_files)
-        app.start_next_level()
+_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-    @staticmethod
-    def About():
-        AboutDialog()
 
 def enum(**enums):
     return type('Enum', (), enums)
 Hole = enum(filled=True, empty=False)
+
+
+class Menu(object):
+    def __init__(self, app):
+        self.app = app
+
+    def OpenFile(self):
+        self.app.grid_forget()
+        level_files = self.app.tk.splitlist(askopenfilenames())
+        self.app.level_files = list(level_files)
+        self.app.start_next_level()
+
+    def About(self):
+        AboutDialog()
+
 
 class Direction(object):
     left = 'Left'
@@ -28,10 +43,6 @@ class Direction(object):
     up = 'Up'
     down = 'Down'
 
-def key(event):
-    directions = {Direction.left, Direction.right, Direction.up, Direction.down}
-    if event.keysym in directions:
-        app.move_player(event.keysym)
 
 class AboutDialog(tk.Frame):
     def __init__(self, master=None):
@@ -39,11 +50,12 @@ class AboutDialog(tk.Frame):
         self = tk.Toplevel()
         self.title("About")
 
-        info = tk.Label(self, text=(__version__ + " - By " + __author__))
+        info = tk.Label(self, text=("%s v%s - by %s" % (__package__, __version__, __author__)))
         info.grid(row=0)
 
         self.ok_button = tk.Button(self, text="OK", command=self.destroy)
         self.ok_button.grid(row=1)
+
 
 class CompleteDialog(tk.Frame):
     def __init__(self, master=None):
@@ -57,6 +69,7 @@ class CompleteDialog(tk.Frame):
         self.ok_button = tk.Button(self, text="OK", command=self.destroy)
         self.ok_button.grid(row=1)
 
+
 class Level(object):
     wall = '*'
     hole = 'o'
@@ -65,19 +78,21 @@ class Level(object):
     player = 'P'
     floor = ' '
 
+
 class Image(object):
-    wall = 'images/wall.gif'
-    hole = 'images/hole.gif'
-    crate_in_hole = 'images/crate-in-hole.gif'
-    crate = 'images/crate.gif'
-    player = 'images/player.gif'
+    wall = os.path.join(_ROOT, 'images/wall.gif')
+    hole = os.path.join(_ROOT, 'images/hole.gif')
+    crate_in_hole = os.path.join(_ROOT, 'images/crate-in-hole.gif')
+    crate = os.path.join(_ROOT, 'images/crate.gif')
+    player = os.path.join(_ROOT, 'images/player.gif')
+
 
 class Application(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
         self.grid()
         self.configure(background="black")
-        self.master.title(__version__)
+        self.master.title("%s v%s" % (__package__, __version__))
         self.master.resizable(0,0)
         icon = tk.PhotoImage(file=Image.crate)
         self.master.tk.call('wm', 'iconphoto', self.master._w, icon)
@@ -96,22 +111,28 @@ class Application(tk.Frame):
         self.level = []
         self.crates = {}
         self.holes = {}
+        
+    def key(self, event):
+        directions = {Direction.left, Direction.right, Direction.up, Direction.down}
+        if event.keysym in directions:
+            self.move_player(event.keysym)
 
     def create_menu(self):
         root = self.master
         menu = tk.Menu(root)
+        user_menu = Menu(self)
         root.config(menu=menu)
 
         file_menu = tk.Menu(menu)
         menu.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Restart", command=self.restart_level)
-        file_menu.add_command(label="Open...", command=Menu.OpenFile)
+        file_menu.add_command(label="Open...", command=user_menu.OpenFile)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=menu.quit)
 
         help_menu = tk.Menu(menu)
         menu.add_cascade(label="Help", menu=help_menu)
-        help_menu.add_command(label="About", command=Menu.About)
+        help_menu.add_command(label="About", command=user_menu.About)
 
     def default_frame(self):
         start_width = 30
@@ -134,10 +155,10 @@ class Application(tk.Frame):
             level = open(self.current_level, "r")
             self.grid()
             self.load_level(level)
-            self.master.title(__version__ + " - " + self.current_level.split("/")[-1])
+            self.master.title("%s v%s - %s" % (__package__, __version__, self.current_level.split("/")[-1]))
         else:
             self.current_level = None
-            self.master.title(__version__)
+            self.master.title("%s v%s" % (__package__, __version__))
             self.default_frame()
             CompleteDialog()
 
@@ -319,7 +340,11 @@ class Application(tk.Frame):
             return True
 
 
-# Start the program
-app = Application()
-app.bind_all("<Key>", key)
-app.mainloop()
+def main():
+    app = Application()
+    app.bind_all("<Key>", app.key)
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
