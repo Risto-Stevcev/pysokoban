@@ -1,7 +1,8 @@
 PySobokan 1.0
 =============
 
-A highly customizable sokoban implementation using Python's tkinter.
+| A highly customizable sokoban implementation using Python's tkinter.
+| View the package in the PyPI repository_ for documentation and an easy Win32 installation.
 
 Requirements
 ============
@@ -47,3 +48,5 @@ To update the version:
 
 | To uninstall, run ``pip uninstall pysokoban``.
 | You can modify the graphics used by replacing the images in the images folder.
+
+.. _repository: https://pypi.python.org/pypi/pysokoban/ 
