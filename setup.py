@@ -1,5 +1,14 @@
 from setuptools import setup, find_packages
 
+# Workaround for the mbcs bug on Linux platforms
+import codecs
+try:
+    codecs.lookup('mbcs')
+except LookupError:
+    ascii = codecs.lookup('ascii')
+    func = lambda name, enc=ascii: {True: enc}.get(name=='mbcs')
+    codecs.register(func) 
+
 setup(
     name='pysokoban',
     version='1.0',
@@ -7,7 +16,7 @@ setup(
     author='Risto Stevcev',
     author_email='risto1@gmail.com',
     url='https://github.com/Risto-Stevcev/pysokoban',
-    long_description="README.rst",
+    long_description=open("README.rst").read(),
     packages=find_packages(),
     include_package_data=True,
     package_data={'' : ['*.gif']},

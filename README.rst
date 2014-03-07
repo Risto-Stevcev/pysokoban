@@ -12,6 +12,16 @@ Requirements
 Usage
 =====
 
+**Installing it using pip:**
+
+#. Run ``pip install --user pysokoban``
+
+#. Run ``python -c "import pysokoban.sokoban as skb; skb.main()"`` to
+   play!
+
+
+**Installing it from the Git repository:**
+
 #. Clone the repository.
 
 #. Run ``python setup.py sdist`` from the project directory to create a
