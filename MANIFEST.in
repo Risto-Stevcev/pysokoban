@@ -1,1 +1,2 @@
 include pysokoban/images/*.gif
+include pysokoban/levels/*/*.skb

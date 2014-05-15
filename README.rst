@@ -1,5 +1,5 @@
-PySobokan 1.0
-=============
+PySokoban
+=========
 
 | A highly customizable sokoban implementation using Python's tkinter.
 | View the package in the PyPI repository_ for documentation and an easy Win32 installation.
@@ -17,7 +17,7 @@ Usage
 
 #. Run ``pip install --user pysokoban``
 
-#. Run ``python -c "import pysokoban.sokoban as skb; skb.main()"`` to
+#. Run ``pysokoban`` to
    play!
 
 
@@ -31,10 +31,10 @@ Usage
 #. Run ``pip install --user pysokoban*.tar.gz`` from the new ``dist/``
    directory to install the package.
 
-#. Run ``python -c "import pysokoban.sokoban as skb; skb.main()"`` to
+#. Run ``pysokoban`` or ``python -c "import pysokoban.sokoban as skb; skb.main()"`` to
    play!
 
--  **Or** simply run ``python sokoban.py`` from the project directory
+-  **Or** just run ``python sokoban.py`` from the project directory
    without installing the package.
 
 To update the version:

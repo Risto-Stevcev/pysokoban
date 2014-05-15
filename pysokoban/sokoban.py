@@ -11,7 +11,7 @@ import os
 
 
 __author__ = "Risto Stevcev"
-__version__ = "1.0"
+__version__ = "1.1"
 if not __package__:
     __package__ = "pysokoban"
 
@@ -29,7 +29,7 @@ class Menu(object):
 
     def OpenFile(self):
         self.app.grid_forget()
-        level_files = self.app.tk.splitlist(askopenfilenames())
+        level_files = self.app.tk.splitlist(askopenfilenames(initialdir=os.path.join(_ROOT, 'levels')))
         self.app.level_files = list(level_files)
         self.app.start_next_level()
 
@@ -85,6 +85,7 @@ class Image(object):
     crate_in_hole = os.path.join(_ROOT, 'images/crate-in-hole.gif')
     crate = os.path.join(_ROOT, 'images/crate.gif')
     player = os.path.join(_ROOT, 'images/player.gif')
+    player_in_hole = os.path.join(_ROOT, 'images/player-in-hole.gif')
 
 
 class Application(tk.Frame):
@@ -261,7 +262,12 @@ class Application(tk.Frame):
 
         if not blocked:
             self.player.grid_forget()
-            player_image = tk.PhotoImage(file=Image.player)
+
+            if self.level[row][column] is Level.hole:
+                player_image = tk.PhotoImage(file=Image.player_in_hole)
+            else:
+                player_image = tk.PhotoImage(file=Image.player)
+
             self.player = tk.Label(self.frame, image=player_image)
             self.player.player_image = player_image
             self.player.grid(row=row, column=column)
